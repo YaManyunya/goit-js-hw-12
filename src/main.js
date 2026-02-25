@@ -26,13 +26,13 @@ async function handleSubmit(event) {
   try {
     page = 1;
     const data = await request.getImagesByQuery(inputData, page);
-    if (!data.hits.length) {
-      // return render.showError();
+    if (data.hits.length === 0) {
+      return render.showError();
     }
     render.renderGallery(data.hits);
     render.showLoadMoreButton();
 
-    totalPages = data.totalHits / request.perPage;
+    totalPages = Math.ceil(data.totalHits / request.perPage);
     if (page >= totalPages) {
       render.hideLoadMoreButton();
       render.showFinishedCollectionError();
@@ -68,7 +68,7 @@ async function handleClick() {
     const cardHeight = card.getBoundingClientRect().height;
     window.scrollBy({
       left: 0,
-      top: `${cardHeight * 2}`,
+      top: cardHeight * 2,
       behavior: 'smooth',
     });
   } catch (error) {
